@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART CUT SERVICES - E-commerce</title>
+    
+    <!-- Google Fonts (Police moderne pour e-commerce) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Anime.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <!-- Configuration Tailwind personnalisée -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui'],
+                        'heading': ['Poppins', 'Inter', 'system-ui']
+                    },
+                    colors: {
+                        'primary': '#3b82f6',
+                        'secondary': '#1e40af',
+                        'accent': '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Styles personnalisés */
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Animation du marquee */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        /* Animation pour la section active */
+        .section-active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .section-hidden {
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Style du panier */
+        .cart-item {
+            transition: all 0.3s ease;
+        }
+        
+        .cart-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        /* Pour assurer que les images des produits ont une hauteur uniforme */
+        .product-image {
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+        }
+        
+        /* Responsive design amélioré */
+        @media (max-width: 640px) {
+            .product-card {
+                width: calc(50% - 0.75rem);
+            }
+            
+            .marquee-content {
+                animation: marquee 15s linear infinite;
+            }
+        }
+        
+        @media (min-width: 641px) and (max-width: 1024px) {
+            .product-card {
+                width: calc(33.333% - 1rem);
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .product-card {
+                width: calc(25% - 1rem);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 🔦 1. SPLASH SCREEN / OPENING -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-white">
+        <div id="splash-logo" class="text-center">
+                           <img src="logo.jpeg" width="300px" height="300px" alt="">
+
+        </div>
+    </div>
+    
+    <!-- 🧭 2. NAVBAR -->
+    <nav id="navbar" class="sticky top-0 z-40 bg-white shadow-md hidden">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-primary">                <img src="logo.jpeg" width="20px" height="20px" style="scale: 1.5;"  alt="">
+</div>
+                
+                <!-- Menu mobile -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Menu desktop -->
+                <div class="hidden md:flex space-x-6">
+                    <a href="#" data-section="accueil" class="nav-link text-gray-700 hover:text-primary transition">Accueil</a>
+                    <a href="#" data-section="catalogue" class="nav-link text-gray-700 hover:text-primary transition">Catalogue</a>
+                    <a href="#" data-section="livraison" class="nav-link text-gray-700 hover:text-primary transition">Livraison</a>
+                    <a href="#" data-section="about" class="nav-link text-gray-700 hover:text-primary transition">About</a>
+                    <a href="#" data-section="contact" class="nav-link text-gray-700 hover:text-primary transition">Contact</a>
+                    <a href="#" data-section="panier" class="nav-link text-gray-700 hover:text-primary transition relative">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Menu mobile déroulant -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-3 pb-2">
+                <a href="#" data-section="accueil" class="nav-link block text-gray-700 hover:text-primary transition">Accueil</a>
+                <a href="#" data-section="catalogue" class="nav-link block text-gray-700 hover:text-primary transition">Catalogue</a>
+                <a href="#" data-section="livraison" class="nav-link block text-gray-700 hover:text-primary transition">Livraison</a>
+                <a href="#" data-section="about" class="nav-link block text-gray-700 hover:text-primary transition">About</a>
+                <a href="#" data-section="contact" class="nav-link block text-gray-700 hover:text-primary transition">Contact</a>
+                <a href="#" data-section="panier" class="nav-link block text-gray-700 hover:text-primary transition">
+                    <span class="inline-flex items-center">
+                        <i class="fas fa-shopping-cart mr-2"></i> Panier
+                        <span id="cart-count-mobile" class="ml-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 📢 3. MARQUEE PROMOTIONNEL -->
+    <div id="promo-marquee" class="bg-blue-600 text-white py-2 hidden">
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <span class="text-sm md:text-base">
+                <i class="fas fa-shipping-fast mr-2"></i>wap k mete on ti annonce specialiser la , tankou livraison gratuit chaque samedi   </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contenu principal -->
+    <main id="main-content" class="hidden">
+        <!-- 🌟 4. HERO SECTION SPÉCIALE -->
+        <section id="accueil-section" class="section-active">
+            <div class="container mx-auto px-4 py-8">
+              
+                
+                <div class="hero-slider-container bg-white rounded-xl shadow-lg p-4 md:p-6 max-w-4xl mx-auto">
+                    <div id="hero-slider" class="relative overflow-hidden rounded-lg" style="height: 400px;">
+                        <!-- Les produits du hero seront injectés dynamiquement ici -->
+                        <div id="hero-loading" class="flex items-center justify-center h-full">
+                            <div class="text-center">
+                                <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+                                <p class="text-gray-600">Chargement des produits...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center mt-6 space-x-4">
+                        <button id="hero-prev" class="bg-gray-200 hover:bg-gray-300 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="hero-next" class="bg-gray-200 hover:bg-gray-300 text-gray-800 w-10 h-10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- CTA Catalogue -->
+<div class="container mx-auto px-4 py-10">
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-blue-600 shadow-xl">
+        
+        <!-- Décor subtil -->
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_white,_transparent_60%)]"></div>
+
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between p-8 md:p-10">
+            
+            <!-- Texte -->
+            <div class="text-white mb-6 md:mb-0 max-w-xl">
+                <h3 class="text-2xl md:text-3xl font-bold mb-3">
+                    Découvrez notre catalogue complet
+                </h3>
+                <p class="text-white/90 text-base md:text-lg">
+                    Des produits sélectionnés avec soin, disponibles immédiatement et livrés selon vos besoins.
+                </p>
+            </div>
+
+            <!-- Bouton CTA -->
+            <a href="#"
+               data-section="catalogue"
+               class="nav-link inline-flex items-center bg-white text-primary font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                Explorer le catalogue
+                <i class="fas fa-arrow-right ml-3"></i>
+            </a>
+
+        </div>
+    </div>
+</div>
+
+             <div  class="container mx-auto px-4 py-8 bg-blue-50 rounded-lg my-8">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Notre Service de Livraison</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <div class="flex items-start mb-4">
+                        <i class="fas fa-shipping-fast text-2xl text-blue-600 mr-3 mt-1"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Livraison Standard</h3>
+                            <p class="text-gray-600">Frais de livraison : <span class="font-bold">650 HTG</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start mb-4">
+                        <i class="fas fa-clock text-2xl text-green-600 mr-3 mt-1"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Livraison Économique</h3>
+                            <p class="text-gray-600">Si vous acceptez d'attendre, frais réduit : <span class="font-bold">300 HTG</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="flex items-start mb-4">
+                        <i class="fas fa-calendar-alt text-2xl text-purple-600 mr-3 mt-1"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Jours de Livraison</h3>
+                            <p class="text-gray-600">Livraisons en masse les <span class="font-bold">lundi, mercredi et vendredi</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <i class="fas fa-map-marker-alt text-2xl text-red-600 mr-3 mt-1"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">Zone de Livraison</h3>
+                            <p class="text-gray-600">Pas de livraison hors de la ville pour l'instant</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           </div>
+        </section>
+        
+        <!-- 🛍️ 5. CATALOGUE PRODUITS -->
+        <section id="catalogue-section" class="section-hidden">
+            <div class="container mx-auto px-4 py-8">
+                
+                
+                <div id="products-container" class="flex flex-wrap justify-center gap-4">
+                    <!-- Les produits seront injectés dynamiquement ici depuis Firebase -->
+                    <div id="products-loading" class="text-center w-full py-12">
+                        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+                        <p class="text-gray-600">Chargement du catalogue...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 🚚 7. SECTION LIVRAISON -->
+        <section id="livraison-section" class="section-hidden">
+            <div class="container mx-auto px-4 py-8">
+                <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-6 md:p-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Livraison</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full p-3 mr-4">
+                                <i class="fas fa-shipping-fast text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">Livraison selon disponibilité</h3>
+                                <p class="text-gray-600">Nous effectuons la livraison de vos articles personnalisés selon la disponibilité des matériaux et notre planning de production. Généralement, les commandes standard sont traitées sous 3 à 5 jours ouvrables.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-green-100 text-green-800 rounded-full p-3 mr-4">
+                                <i class="fas fa-phone-alt text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">Contact avant livraison</h3>
+                                <p class="text-gray-600">Nous vous contacterons par téléphone ou WhatsApp avant la livraison pour confirmer l'adresse et le créneau horaire. Cela nous permet de nous assurer que vous serez disponible pour recevoir votre commande.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-yellow-100 text-yellow-800 rounded-full p-3 mr-4">
+                                <i class="fas fa-map-marker-alt text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800 mb-2">Zones de livraison</h3>
+                                <p class="text-gray-600">Nous livrons dans tout Port-au-Prince et ses environs. Pour les commandes en dehors de la zone métropolitaine, des frais de livraison supplémentaires peuvent s'appliquer.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+                        <p class="text-blue-800 text-center">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Pour toute question concernant la livraison, n'hésitez pas à nous contacter via la section <a href="#" data-section="contact" class="font-semibold underline">Contact</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 🏢 8. SECTION ABOUT -->
+        <section id="about-section" class="relative py-24 bg-gray-50 overflow-hidden">
+    
+    <!-- Décor subtil -->
+    <div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10"></div>
+
+    <div class="relative container mx-auto px-6">
+        
+        <!-- Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="inline-block mb-4 px-5 py-2 text-sm font-semibold text-primary bg-primary/10 rounded-full tracking-wide">
+                À propos de nous
+            </span>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+                L’excellence en personnalisation
+            </h2>
+            <p class="mt-6 text-lg text-gray-600">
+                SMART CUT SERVICES transforme vos idées en créations uniques grâce à la technologie, la créativité et la précision.
+            </p>
+        </div>
+
+        <!-- Card principale -->
+        <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl p-10 md:p-14">
+            
+            <!-- Description -->
+            <div class="text-center max-w-4xl mx-auto mb-16">
+                <p class="text-gray-700 text-lg leading-relaxed">
+                    <span class="font-bold text-primary">SMART CUT SERVICES</span> est spécialisée dans la découpe de vinyle, la vente de matériaux premium et la personnalisation d’articles tels que les maillots, tasses et supports promotionnels.  
+                    Nous combinons innovation, précision et design pour offrir des solutions sur-mesure à forte valeur ajoutée.
+                </p>
+            </div>
+
+            <!-- Vision / Mission / Objectif -->
+            <div class="grid md:grid-cols-3 gap-10 mb-20">
+                
+                <!-- Card -->
+                <div class="group bg-gray-50 p-8 rounded-2xl border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <div class="text-primary text-4xl mb-6 group-hover:scale-110 transition">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Notre vision</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Devenir une référence incontournable dans la personnalisation et la découpe de vinyle en transformant chaque idée en produit d’exception.
+                    </p>
+                </div>
+
+                <!-- Card -->
+                <div class="group bg-gray-50 p-8 rounded-2xl border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <div class="text-primary text-4xl mb-6 group-hover:scale-110 transition">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Notre mission</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Offrir des solutions de personnalisation rapides, accessibles et irréprochables, avec un service client de haut niveau.
+                    </p>
+                </div>
+
+                <!-- Card -->
+                <div class="group bg-gray-50 p-8 rounded-2xl border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                    <div class="text-primary text-4xl mb-6 group-hover:scale-110 transition">
+                        <i class="fas fa-flag-checkered"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Notre objectif</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Innover continuellement, élargir notre clientèle et offrir une expérience mémorable à chaque projet.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Valeurs -->
+            <div class="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-10">
+                <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">
+                    Nos valeurs fondamentales
+                </h3>
+
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="px-6 py-3 bg-white border border-primary text-primary font-semibold rounded-full shadow-sm hover:bg-primary hover:text-white transition">
+                        Qualité
+                    </span>
+                    <span class="px-6 py-3 bg-white border border-primary text-primary font-semibold rounded-full shadow-sm hover:bg-primary hover:text-white transition">
+                        Créativité
+                    </span>
+                    <span class="px-6 py-3 bg-white border border-primary text-primary font-semibold rounded-full shadow-sm hover:bg-primary hover:text-white transition">
+                        Innovation
+                    </span>
+                    <span class="px-6 py-3 bg-white border border-primary text-primary font-semibold rounded-full shadow-sm hover:bg-primary hover:text-white transition">
+                        Satisfaction client
+                    </span>
+                    <span class="px-6 py-3 bg-white border border-primary text-primary font-semibold rounded-full shadow-sm hover:bg-primary hover:text-white transition">
+                        Rapidité
+                    </span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+        
+        <!-- 📩 9. SECTION CONTACT -->
+        <section id="contact-section" class="section-hidden">
+            <div class="container mx-auto px-4 py-8">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">Contactez-nous</h2>
+                    <p class="text-gray-600 text-center mb-8">Une question, un projet de personnalisation ? N'hésitez pas à nous écrire.</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white rounded-xl shadow-md p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Envoyez-nous un message</h3>
+                            
+                            <form id="contact-form">
+                                <div class="mb-4">
+                                    <label for="name" class="block text-gray-700 mb-2">Nom complet</label>
+                                    <input type="text" id="name" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="email" class="block text-gray-700 mb-2">Adresse email</label>
+                                    <input type="email" id="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label for="message" class="block text-gray-700 mb-2">Message</label>
+                                    <textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                                </div>
+                                
+                                <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-medium py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center">
+                                    <i class="fas fa-paper-plane mr-2"></i> Envoyer le message
+                                </button>
+                                
+                                <div id="form-message" class="mt-4 text-center hidden"></div>
+                            </form>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl shadow-md p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-6">Nos coordonnées</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white rounded-full p-3 mr-4">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Adresse</h4>
+                                        <p class="text-gray-600">Port-au-Prince, Haïti</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white rounded-full p-3 mr-4">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Téléphone</h4>
+                                        <p class="text-gray-600">+509 1234 5678</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white rounded-full p-3 mr-4">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Email</h4>
+                                        <p class="text-gray-600">contact@smartcutservices.ht</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white rounded-full p-3 mr-4">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Horaires d'ouverture</h4>
+                                        <p class="text-gray-600">Lundi - Vendredi: 8h00 - 18h00</p>
+                                        <p class="text-gray-600">Samedi: 9h00 - 14h00</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8">
+                                <h4 class="font-semibold text-gray-800 mb-4">Suivez-nous sur les réseaux sociaux</h4>
+                                <div class="flex space-x-4">
+                                    <a href="#" class="bg-blue-600 text-white rounded-full p-3 hover:bg-blue-700 transition">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="#" class="bg-pink-600 text-white rounded-full p-3 hover:bg-pink-700 transition">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                    <a href="#" class="bg-blue-400 text-white rounded-full p-3 hover:bg-blue-500 transition">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                    <a href="#" class="bg-green-500 text-white rounded-full p-3 hover:bg-green-600 transition">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 🛒 6. PANIER -->
+        <section id="panier-section" class="section-hidden">
+            <div class="container mx-auto px-4 py-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2 text-center">Votre Panier</h2>
+                <p class="text-gray-600 text-center mb-8">Récapitulatif de vos articles sélectionnés</p>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div id="cart-empty" class="bg-white rounded-xl shadow-md p-8 text-center hidden">
+                        <div class="text-5xl text-gray-300 mb-4">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-700 mb-2">Votre panier est vide</h3>
+                        <p class="text-gray-600 mb-6">Ajoutez des produits depuis le catalogue pour commencer vos achats.</p>
+                        <a href="#" data-section="catalogue" class="inline-block bg-primary hover:bg-secondary text-white font-medium py-3 px-6 rounded-lg transition duration-300">
+                            <i class="fas fa-store mr-2"></i> Voir le catalogue
+                        </a>
+                    </div>
+                    
+                    <div id="cart-content" class="hidden">
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="py-4 px-4 text-left text-gray-700 font-semibold">Produit</th>
+                                            <th class="py-4 px-4 text-left text-gray-700 font-semibold">Prix</th>
+                                            <th class="py-4 px-4 text-left text-gray-700 font-semibold">Quantité</th>
+                                            <th class="py-4 px-4 text-left text-gray-700 font-semibold">Total</th>
+                                            <th class="py-4 px-4 text-left text-gray-700 font-semibold">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cart-items">
+                                        <!-- Les articles du panier seront injectés ici dynamiquement -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="md:col-span-2 bg-white rounded-xl shadow-md p-6">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">Options de paiement</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center">
+                                        <input type="radio" id="moncash" name="payment" value="moncash" checked class="mr-3">
+                                        <label for="moncash" class="flex items-center cursor-pointer">
+                                            <div class="bg-orange-100 p-2 rounded mr-3">
+                                                <i class="fas fa-money-bill-wave text-orange-600 text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-800">Payer avec MonCash</p>
+                                                <p class="text-sm text-gray-600">Paiement sécurisé via MonCash</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center">
+                                        <input type="radio" id="cash" name="payment" value="cash" class="mr-3">
+                                        <label for="cash" class="flex items-center cursor-pointer">
+                                            <div class="bg-green-100 p-2 rounded mr-3">
+                                                <i class="fas fa-money-bill text-green-600 text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-800">Paiement à la livraison</p>
+                                                <p class="text-sm text-gray-600">Payez en espèces à la réception</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-8">
+                                    <h3 class="text-xl font-bold text-gray-800 mb-4">Informations de livraison</h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="delivery-address" class="block text-gray-700 mb-2">Adresse de livraison</label>
+                                            <textarea id="delivery-address" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Veuillez saisir votre adresse complète"></textarea>
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="phone" class="block text-gray-700 mb-2">Numéro de téléphone</label>
+                                            <input type="tel" id="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="+509 1234 5678">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md p-6">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4">Récapitulatif de commande</h3>
+                                
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Sous-total</span>
+                                        <span id="cart-subtotal" class="font-medium">0 HTG</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Livraison</span>
+                                        <span id="cart-shipping" class="font-medium">0 HTG</span>
+                                    </div>
+                                    <div class="border-t pt-3 flex justify-between">
+                                        <span class="text-gray-800 font-semibold">Total</span>
+                                        <span id="cart-total" class="text-xl font-bold text-primary">0 HTG</span>
+                                    </div>
+                                </div>
+                                
+                                <button id="checkout-button" class="w-full bg-primary hover:bg-secondary text-white font-medium py-3 px-4 rounded-lg transition duration-300 mb-4">
+                                    <i class="fas fa-lock mr-2"></i> Finaliser la commande
+                                </button>
+                                
+                                <div id="payment-link-container" class="hidden mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                    <p class="text-green-800 text-sm mb-2">Cliquez sur le lien ci-dessous pour effectuer le paiement via MonCash:</p>
+                                    <a id="moncash-link" href="#" target="_blank" class="text-primary font-medium break-all">Lien de paiement MonCash</a>
+                                </div>
+                                
+                                <div class="mt-4 text-center">
+                                    <p class="text-sm text-gray-600">
+                                        <i class="fas fa-shield-alt mr-1"></i> Paiement 100% sécurisé
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- 🧾 10. FOOTER -->
+    <footer id="footer" class="bg-gray-800 text-white py-8 hidden">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">SMART CUT SERVICES</h3>
+                    <p class="text-gray-300 mb-4">Votre partenaire en découpe de vinyle et personnalisation d'articles.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition">
+                            <i class="fab fa-whatsapp text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Liens rapides</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" data-section="catalogue" class="text-gray-300 hover:text-white transition">Catalogue</a></li>
+                        <li><a href="#" data-section="livraison" class="text-gray-300 hover:text-white transition">Livraison</a></li>
+                        <li><a href="#" data-section="about" class="text-gray-300 hover:text-white transition">À propos</a></li>
+                        <li><a href="#" data-section="contact" class="text-gray-300 hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mr-3 mt-1"></i>
+                            <span>Port-au-Prince, Haïti</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-3"></i>
+                            <span>+509 1234 5678</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3"></i>
+                            <span>contact@smartcutservices.ht</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; <span id="current-year"></span> SMART CUT SERVICES. Tous droits réservés.</p>
+                <p class="mt-2 text-sm">Découpe de vinyle et personnalisation d'articles.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts Firebase et application -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // 🔥 Configuration Firebase (fournie)
+      const firebaseConfig = {
+  apiKey: "AIzaSyBZEl66YW2x4csBHfU3BlSDBYxigVQ1U8U",
+  authDomain: "izipret-c669d.firebaseapp.com",
+  projectId: "izipret-c669d",
+  storageBucket: "izipret-c669d.firebasestorage.app",
+  messagingSenderId: "483506445126",
+  appId: "1:483506445126:web:5dcc2efef0fabb8f0b2347",
+  measurementId: "G-0SKSRSFHZ4"
+};
+        
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // État de l'application
+        const appState = {
+            currentSection: 'accueil',
+            products: [],
+            cart: [],
+            heroProducts: [],
+            currentHeroIndex: 0,
+            heroInterval: null
+        };
+        
+        // 🎬 1. ANIMATION DU SPLASH SCREEN
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation d'entrée du splash screen
+            const splashAnimation = anime.timeline({
+                easing: 'easeOutExpo',
+                duration: 800
+            });
+            
+            splashAnimation
+                .add({
+                    targets: '#splash-logo',
+                    scale: [0.8, 1],
+                    opacity: [0, 1]
+                })
+                .add({
+                    targets: '#splash-screen',
+                    opacity: [1, 0],
+                    delay: 2500,
+                    complete: function() {
+                        document.getElementById('splash-screen').style.display = 'none';
+                        document.getElementById('navbar').classList.remove('hidden');
+                        document.getElementById('promo-marquee').classList.remove('hidden');
+                        document.getElementById('main-content').classList.remove('hidden');
+                        document.getElementById('footer').classList.remove('hidden');
+                        
+                        // Animation d'apparition du contenu
+                        anime({
+                            targets: '#main-content',
+                            opacity: [0, 1],
+                            duration: 800,
+                            easing: 'easeInOutQuad'
+                        });
+                        
+                        // Charger les données
+                        loadProducts();
+                        updateCartDisplay();
+                        updateYearInFooter();
+                    }
+                });
+            
+            // Initialiser les événements
+            initializeEventListeners();
+            
+            // Charger le panier depuis le localStorage
+            loadCartFromStorage();
+        });
+        
+        // Initialiser tous les événements
+        function initializeEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                    
+                    // Fermer le menu mobile si ouvert
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                });
+            });
+            
+            // Bouton menu mobile
+            document.getElementById('mobile-menu-button').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // Navigation du hero slider
+            document.getElementById('hero-next').addEventListener('click', showNextHeroProduct);
+            document.getElementById('hero-prev').addEventListener('click', showPrevHeroProduct);
+            
+            // Formulaire de contact
+            document.getElementById('contact-form').addEventListener('submit', handleContactForm);
+            
+            // Bouton de commande
+            document.getElementById('checkout-button').addEventListener('click', handleCheckout);
+            
+            // Options de paiement
+            document.querySelectorAll('input[name="payment"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const paymentLinkContainer = document.getElementById('payment-link-container');
+                    if (this.value === 'moncash' && appState.cart.length > 0) {
+                        paymentLinkContainer.classList.remove('hidden');
+                        generateMonCashLink();
+                    } else {
+                        paymentLinkContainer.classList.add('hidden');
+                    }
+                });
+            });
+        }
+        
+        // Afficher une section et cacher les autres
+        function showSection(sectionId) {
+            // Mettre à jour l'état
+            appState.currentSection = sectionId;
+            
+            // Cacher toutes les sections
+            document.querySelectorAll('section[id$="-section"]').forEach(section => {
+                section.classList.remove('section-active');
+                section.classList.add('section-hidden');
+            });
+            
+            // Afficher la section demandée
+            const targetSection = document.getElementById(`${sectionId}-section`);
+            if (targetSection) {
+                targetSection.classList.remove('section-hidden');
+                targetSection.classList.add('section-active');
+                
+                // Animation d'entrée
+                anime({
+                    targets: `#${sectionId}-section`,
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 500,
+                    easing: 'easeOutQuad'
+                });
+                
+                // Arrêter le slider hero si on n'est pas sur la section accueil
+                if (sectionId !== 'accueil' && appState.heroInterval) {
+                    clearInterval(appState.heroInterval);
+                    appState.heroInterval = null;
+                }
+                
+                // Démarrer le slider hero si on est sur la section accueil
+                if (sectionId === 'accueil' && appState.heroProducts.length > 0 && !appState.heroInterval) {
+                    startHeroSlider();
+                }
+                
+                // Si on affiche le panier, mettre à jour l'affichage
+                if (sectionId === 'panier') {
+                    updateCartDisplay();
+                }
+            }
+        }
+        
+        // Charger les produits depuis Firebase
+        async function loadProducts() {
+            try {
+                // Récupérer les produits depuis Firestore
+                const productsSnapshot = await db.collection('products').get();
+                
+                if (productsSnapshot.empty) {
+                    console.log('Aucun produit trouvé dans Firestore');
+                    // Données de démo pour le cas où Firestore serait vide
+                    loadDemoProducts();
+                    return;
+                }
+                
+                appState.products = [];
+                appState.heroProducts = [];
+                
+                productsSnapshot.forEach(doc => {
+                    const product = doc.data();
+                    product.id = doc.id;
+                    appState.products.push(product);
+                    
+                    // Ajouter aux produits hero si marqué comme tel
+                    if (product.featured) {
+                        appState.heroProducts.push(product);
+                    }
+                });
+                
+                // Si pas de produits hero, prendre les 3 premiers produits
+                if (appState.heroProducts.length === 0 && appState.products.length > 0) {
+                    appState.heroProducts = appState.products.slice(0, Math.min(3, appState.products.length));
+                }
+                
+                // Mettre à jour l'affichage
+                renderProducts();
+                renderHeroProducts();
+                
+                // Démarrer le slider hero si on est sur la section accueil
+                if (appState.currentSection === 'accueil') {
+                    startHeroSlider();
+                }
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des produits:', error);
+                // Charger les données de démo en cas d'erreur
+                loadDemoProducts();
+            }
+        }
+        
+        // Charger les produits de démo (fallback)
+        function loadDemoProducts() {
+            appState.products = [
+                {
+                    id: '1',
+                    name: 'Vinyle Adhésif Premium',
+                    price: 1500,
+                    description: 'Vinyle adhésif de haute qualité pour découpe',
+                    image: 'vinyl-premium.jpg',
+                    category: 'matériaux',
+                    featured: true
+                },
+                {
+                    id: '2',
+                    name: 'Maillot Personnalisé',
+                    price: 2500,
+                    description: 'Maillot de sport personnalisable avec votre design',
+                    image: 'jersey-custom.jpg',
+                    category: 'vêtements',
+                    featured: true
+                },
+                {
+                    id: '3',
+                    name: 'Tasse Personnalisée',
+                    price: 1200,
+                    description: 'Tasse céramique avec impression de votre design',
+                    image: 'mug-custom.jpg',
+                    category: 'accessoires',
+                    featured: true
+                },
+                {
+                    id: '4',
+                    name: 'Vinyle Réfléchissant',
+                    price: 1800,
+                    description: 'Vinyle réfléchissant pour signalétique',
+                    image: 'vinyl-reflective.jpg',
+                    category: 'matériaux',
+                    featured: false
+                },
+                {
+                    id: '5',
+                    name: 'Autocollant Entreprise',
+                    price: 800,
+                    description: 'Autocollant personnalisé pour vitrine ou véhicule',
+                    image: 'sticker-business.jpg',
+                    category: 'décoration',
+                    featured: false
+                },
+                {
+                    id: '6',
+                    name: 'Casquette Personnalisée',
+                    price: 1800,
+                    description: 'Casquette avec broderie de votre logo',
+                    image: 'cap-custom.jpg',
+                    category: 'vêtements',
+                    featured: false
+                },
+                {
+                    id: '7',
+                    name: 'Sac Réutilisable Personnalisé',
+                    price: 1000,
+                    description: 'Sac en tissu avec impression écologique',
+                    image: 'bag-custom.jpg',
+                    category: 'accessoires',
+                    featured: false
+                },
+                {
+                    id: '8',
+                    name: 'Décoration Murale Vinyle',
+                    price: 2200,
+                    description: 'Décoration murale en vinyle découpé',
+                    image: 'wall-decor.jpg',
+                    category: 'décoration',
+                    featured: false
+                }
+            ];
+            
+            appState.heroProducts = appState.products.filter(p => p.featured);
+            
+            if (appState.heroProducts.length === 0) {
+                appState.heroProducts = appState.products.slice(0, 3);
+            }
+            
+            renderProducts();
+            renderHeroProducts();
+            
+            if (appState.currentSection === 'accueil') {
+                startHeroSlider();
+            }
+        }
+        
+        // Afficher les produits dans le catalogue
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            
+            if (appState.products.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center w-full py-12">
+                        <i class="fas fa-box-open text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-600">Aucun produit disponible pour le moment.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Supprimer l'indicateur de chargement
+            const loadingElement = document.getElementById('products-loading');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+            
+            // Générer les cartes produits
+            let productsHTML = '';
+            
+            appState.products.forEach(product => {
+                // Chemin de l'image (basé sur le nom stocké dans Firebase)
+                const imagePath = `./${product.image}`;
+                
+                productsHTML += `
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                        <div class="relative overflow-hidden" style="height: 180px;">
+                            <img src="${imagePath}" alt="${product.name}" class="product-image w-full h-full object-cover transition-transform duration-500 hover:scale-110" onerror="this.src='https://via.placeholder.com/300x180/3b82f6/ffffff?text=${encodeURIComponent(product.name)}'">
+                            <div class="absolute top-3 right-3 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
+                                NOUVEAU
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 flex-grow flex flex-col">
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">${product.name}</h3>
+                            <p class="text-gray-600 text-sm mb-4 flex-grow">${product.description || 'Produit de qualité pour personnalisation'}</p>
+                            
+                            <div class="flex justify-between items-center mt-auto">
+                                <span class="text-xl font-bold text-primary">${product.price.toLocaleString()} HTG</span>
+                                <button class="add-to-cart-btn bg-primary hover:bg-secondary text-white font-medium py-2 px-4 rounded-lg transition duration-300" data-product-id="${product.id}">
+                                    <i class="fas fa-cart-plus mr-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = productsHTML;
+            
+            // Ajouter les événements aux boutons "Ajouter au panier"
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    addToCart(productId);
+                });
+            });
+        }
+        
+        // Afficher les produits dans le hero slider
+        function renderHeroProducts() {
+            const container = document.getElementById('hero-slider');
+            
+            if (appState.heroProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="flex items-center justify-center h-full bg-gray-100 rounded-lg">
+                        <p class="text-gray-600">Aucun produit en vedette pour le moment.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Supprimer l'indicateur de chargement
+            const loadingElement = document.getElementById('hero-loading');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+            
+            // Créer le contenu du slider
+            let slidesHTML = '';
+            
+            appState.heroProducts.forEach((product, index) => {
+                const imagePath = `./${product.image}`;
+                const isActive = index === 0 ? 'active' : '';
+                
+                slidesHTML += `
+                   <div class="hero-slide absolute inset-0 ${isActive}">
+    <!-- Carte style carousel -->
+    <div class="relative bg-white rounded-lg shadow-lg overflow-hidden h-full">
+        
+        <!-- Contenu du slide -->
+        <div class="h-full flex flex-col md:flex-row items-center">
+            
+            <!-- Image produit -->
+            <div class="md:w-1/2 h-1/2 md:h-full flex items-center justify-center p-6 bg-gray-50">
+                <div class="relative w-full h-full max-w-md">
+                    <img 
+                        src="${imagePath}" 
+                        alt="${product.name}" 
+                        class="w-full h-full object-contain transition-transform duration-500 hover:scale-105"
+                        onerror="this.src='https://via.placeholder.com/500x300/3b82f6/ffffff?text=${encodeURIComponent(product.name)}'"
+                    >
+                </div>
+            </div>
+
+            <!-- Infos produit -->
+            <div class="md:w-1/2 h-1/2 md:h-full flex flex-col justify-center p-8 bg-white">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+                    ${product.name}
+                </h2>
+
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    ${product.description || 'Produit de qualité supérieure pour vos projets de personnalisation.'}
+                </p>
+
+                <div class="text-3xl font-extrabold text-primary mb-6">
+                    ${product.price.toLocaleString()} HTG
+                </div>
+
+                <div class="flex flex-wrap gap-4">
+                    <button 
+                        class="hero-add-to-cart-btn bg-primary hover:bg-secondary text-white font-medium py-3 px-6 rounded-full transition duration-300 flex items-center shadow-md"
+                        data-product-id="${product.id}"
+                    >
+                        <i class="fas fa-cart-plus mr-2"></i>
+                        Ajouter au panier
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+                `;
+            });
+            
+            container.innerHTML = slidesHTML;
+            
+            // Ajouter les événements aux boutons "Ajouter au panier" du hero
+            document.querySelectorAll('.hero-add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    addToCart(productId);
+                    
+                    // Animation de confirmation
+                    anime({
+                        targets: this,
+                        scale: [1, 1.2, 1],
+                        duration: 500,
+                        easing: 'easeInOutQuad'
+                    });
+                });
+            });
+        }
+        
+        // Démarrer le slider hero
+        function startHeroSlider() {
+            // Arrêter l'intervalle existant
+            if (appState.heroInterval) {
+                clearInterval(appState.heroInterval);
+            }
+            
+            // Démarrer un nouvel intervalle
+            appState.heroInterval = setInterval(showNextHeroProduct, 5000);
+        }
+        
+        // Afficher le produit hero suivant
+        function showNextHeroProduct() {
+            if (appState.heroProducts.length <= 1) return;
+            
+            const currentIndex = appState.currentHeroIndex;
+            const nextIndex = (currentIndex + 1) % appState.heroProducts.length;
+            
+            animateHeroTransition(currentIndex, nextIndex);
+            appState.currentHeroIndex = nextIndex;
+        }
+        
+        // Afficher le produit hero précédent
+        function showPrevHeroProduct() {
+            if (appState.heroProducts.length <= 1) return;
+            
+            const currentIndex = appState.currentHeroIndex;
+            const prevIndex = (currentIndex - 1 + appState.heroProducts.length) % appState.heroProducts.length;
+            
+            animateHeroTransition(currentIndex, prevIndex);
+            appState.currentHeroIndex = prevIndex;
+        }
+        
+        // Animer la transition entre les slides hero
+        function animateHeroTransition(fromIndex, toIndex) {
+            const slides = document.querySelectorAll('.hero-slide');
+            const currentSlide = slides[fromIndex];
+            const nextSlide = slides[toIndex];
+            
+            // Animation avec Anime.js
+            anime({
+                targets: currentSlide,
+                opacity: 0,
+                duration: 500,
+                easing: 'easeInOutQuad',
+                complete: function() {
+                    currentSlide.classList.remove('active');
+                }
+            });
+            
+            nextSlide.classList.add('active');
+            anime({
+                targets: nextSlide,
+                opacity: [0, 1],
+                duration: 500,
+                delay: 200,
+                easing: 'easeInOutQuad'
+            });
+        }
+        
+        // Gérer le panier
+        function addToCart(productId) {
+            const product = appState.products.find(p => p.id === productId);
+            
+            if (!product) {
+                console.error('Produit non trouvé:', productId);
+                return;
+            }
+            
+            // Vérifier si le produit est déjà dans le panier
+            const existingItemIndex = appState.cart.findIndex(item => item.productId === productId);
+            
+            if (existingItemIndex >= 0) {
+                // Augmenter la quantité
+                appState.cart[existingItemIndex].quantity += 1;
+            } else {
+                // Ajouter un nouvel élément
+                appState.cart.push({
+                    productId: productId,
+                    product: product,
+                    quantity: 1,
+                    color: null
+                });
+            }
+            
+            // Mettre à jour le stockage local
+            saveCartToStorage();
+            
+            // Mettre à jour l'affichage
+            updateCartDisplay();
+            
+            // Afficher une notification
+            showNotification(`"${product.name}" a été ajouté au panier!`, 'success');
+        }
+        
+        // Mettre à jour l'affichage du panier
+        function updateCartDisplay() {
+            // Mettre à jour le compteur
+            const totalItems = appState.cart.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cart-count').textContent = totalItems;
+            document.getElementById('cart-count-mobile').textContent = totalItems;
+            
+            // Mettre à jour le contenu du panier si la section est active
+            if (appState.currentSection === 'panier') {
+                renderCart();
+            }
+        }
+        
+        // Afficher le contenu du panier
+        function renderCart() {
+            const emptyCartDiv = document.getElementById('cart-empty');
+            const cartContentDiv = document.getElementById('cart-content');
+            const cartItemsTbody = document.getElementById('cart-items');
+            
+            if (appState.cart.length === 0) {
+                emptyCartDiv.classList.remove('hidden');
+                cartContentDiv.classList.add('hidden');
+                return;
+            }
+            
+            emptyCartDiv.classList.add('hidden');
+            cartContentDiv.classList.remove('hidden');
+            
+            // Calculer les totaux
+            let subtotal = 0;
+            
+            // Générer les lignes du panier
+            let cartHTML = '';
+            
+            appState.cart.forEach((item, index) => {
+                const itemTotal = item.product.price * item.quantity;
+                subtotal += itemTotal;
+                
+                cartHTML += `
+                    <tr class="cart-item border-b border-gray-200">
+                        <td class="py-4 px-4">
+                            <div class="flex items-center">
+                                <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden mr-4">
+                                    <img src="./${item.product.image}" alt="${item.product.name}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/100/3b82f6/ffffff?text=${encodeURIComponent(item.product.name.substring(0, 10))}'">
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">${item.product.name}</h4>
+                                    <p class="text-sm text-gray-600">${item.product.description || 'Produit personnalisé'}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="font-medium">${item.product.price.toLocaleString()} HTG</span>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="flex items-center">
+                                <button class="decrease-quantity w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l" data-index="${index}">
+                                    <i class="fas fa-minus text-sm"></i>
+                                </button>
+                                <input type="number" min="1" value="${item.quantity}" class="quantity-input w-12 h-8 border-t border-b border-gray-300 text-center" data-index="${index}">
+                                <button class="increase-quantity w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r" data-index="${index}">
+                                    <i class="fas fa-plus text-sm"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="font-bold text-primary">${itemTotal.toLocaleString()} HTG</span>
+                        </td>
+                        <td class="py-4 px-4">
+                            <button class="remove-from-cart text-red-600 hover:text-red-800" data-index="${index}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            cartItemsTbody.innerHTML = cartHTML;
+            
+            // Calculer les frais de livraison (gratuit si > 5000 HTG)
+            const shipping = subtotal >= 5000 ? 0 : 500;
+            const total = subtotal + shipping;
+            
+            // Mettre à jour les totaux
+            document.getElementById('cart-subtotal').textContent = `${subtotal.toLocaleString()} HTG`;
+            document.getElementById('cart-shipping').textContent = `${shipping.toLocaleString()} HTG`;
+            document.getElementById('cart-total').textContent = `${total.toLocaleString()} HTG`;
+            
+            // Ajouter les événements
+            document.querySelectorAll('.decrease-quantity').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    updateCartItemQuantity(index, appState.cart[index].quantity - 1);
+                });
+            });
+            
+            document.querySelectorAll('.increase-quantity').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    updateCartItemQuantity(index, appState.cart[index].quantity + 1);
+                });
+            });
+            
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const newQuantity = parseInt(this.value) || 1;
+                    updateCartItemQuantity(index, newQuantity);
+                });
+            });
+            
+            document.querySelectorAll('.remove-from-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    removeFromCart(index);
+                });
+            });
+            
+            // Générer le lien MonCash si l'option est sélectionnée
+            if (document.getElementById('moncash').checked) {
+                generateMonCashLink();
+                document.getElementById('payment-link-container').classList.remove('hidden');
+            }
+        }
+        
+        // Mettre à jour la quantité d'un article dans le panier
+        function updateCartItemQuantity(index, newQuantity) {
+            if (newQuantity < 1) {
+                removeFromCart(index);
+                return;
+            }
+            
+            appState.cart[index].quantity = newQuantity;
+            saveCartToStorage();
+            updateCartDisplay();
+        }
+        
+        // Retirer un article du panier
+        function removeFromCart(index) {
+            appState.cart.splice(index, 1);
+            saveCartToStorage();
+            updateCartDisplay();
+            
+            // Afficher une notification
+            showNotification('Article retiré du panier', 'info');
+        }
+        
+        // Sauvegarder le panier dans le localStorage
+        function saveCartToStorage() {
+            const cartData = appState.cart.map(item => ({
+                productId: item.productId,
+                quantity: item.quantity,
+                color: item.color
+            }));
+            
+            localStorage.setItem('smartcut_cart', JSON.stringify(cartData));
+        }
+        
+        // Charger le panier depuis le localStorage
+        function loadCartFromStorage() {
+            const cartData = localStorage.getItem('smartcut_cart');
+            
+            if (cartData) {
+                try {
+                    const parsedCart = JSON.parse(cartData);
+                    
+                    // Reconstruire le panier avec les données produits
+                    appState.cart = [];
+                    
+                    parsedCart.forEach(item => {
+                        const product = appState.products.find(p => p.id === item.productId);
+                        
+                        if (product) {
+                            appState.cart.push({
+                                productId: item.productId,
+                                product: product,
+                                quantity: item.quantity,
+                                color: item.color
+                            });
+                        }
+                    });
+                } catch (error) {
+                    console.error('Erreur lors du chargement du panier:', error);
+                }
+            }
+        }
+        
+        // Gérer la soumission du formulaire de contact
+        function handleContactForm(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // Simulation d'envoi
+            const formMessage = document.getElementById('form-message');
+            formMessage.textContent = `Merci ${name}! Votre message a été envoyé. Nous vous répondrons à ${email} dans les plus brefs délais.`;
+            formMessage.className = 'mt-4 text-center text-green-600 bg-green-50 p-3 rounded-lg';
+            formMessage.classList.remove('hidden');
+            
+            // Animation
+            anime({
+                targets: formMessage,
+                opacity: [0, 1],
+                duration: 500,
+                easing: 'easeInOutQuad'
+            });
+            
+            // Réinitialiser le formulaire
+            document.getElementById('contact-form').reset();
+            
+            // Masquer le message après 5 secondes
+            setTimeout(() => {
+                formMessage.classList.add('hidden');
+            }, 5000);
+        }
+        
+        // Gérer la finalisation de la commande
+        function handleCheckout() {
+            if (appState.cart.length === 0) {
+                showNotification('Votre panier est vide!', 'error');
+                return;
+            }
+            
+            const deliveryAddress = document.getElementById('delivery-address').value;
+            const phone = document.getElementById('phone').value;
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+            
+            if (!deliveryAddress || !phone) {
+                showNotification('Veuillez remplir toutes les informations de livraison', 'error');
+                return;
+            }
+            
+            // Calculer le total
+            const subtotal = appState.cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+            const shipping = subtotal >= 5000 ? 0 : 500;
+            const total = subtotal + shipping;
+            
+            if (paymentMethod === 'moncash') {
+                // Générer le lien MonCash
+                generateMonCashLink();
+                
+                // Afficher une notification
+                showNotification('Redirection vers MonCash pour le paiement', 'success');
+            } else {
+                // Paiement à la livraison
+                const orderSummary = appState.cart.map(item => 
+                    `${item.product.name} (x${item.quantity}): ${(item.product.price * item.quantity).toLocaleString()} HTG`
+                ).join('\n');
+                
+                const message = `Merci pour votre commande!\n\nDétails:\n${orderSummary}\n\nSous-total: ${subtotal.toLocaleString()} HTG\nLivraison: ${shipping.toLocaleString()} HTG\nTotal: ${total.toLocaleString()} HTG\n\nNous vous contacterons au ${phone} pour confirmer la livraison à l'adresse:\n${deliveryAddress}`;
+                
+                showNotification(message, 'success');
+                
+                // Vider le panier
+                appState.cart = [];
+                saveCartToStorage();
+                updateCartDisplay();
+            }
+        }
+        
+        // Générer un lien de paiement MonCash (simulation)
+        function generateMonCashLink() {
+            const subtotal = appState.cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+            const shipping = subtotal >= 5000 ? 0 : 500;
+            const total = subtotal + shipping;
+            
+            // En production, il faudrait utiliser l'API MonCash
+            // Pour cette démo, nous générons un lien fictif
+            const moncashLink = `https://moncash.com/payment?amount=${total}&orderId=SCS-${Date.now()}`;
+            document.getElementById('moncash-link').href = moncashLink;
+            document.getElementById('moncash-link').textContent = `Payer ${total.toLocaleString()} HTG via MonCash`;
+        }
+        
+        // Afficher une notification
+        function showNotification(message, type = 'info') {
+            // Créer l'élément de notification
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-md transform translate-x-full transition-transform duration-300`;
+            
+            // Couleur selon le type
+            if (type === 'success') {
+                notification.classList.add('bg-green-100', 'text-green-800', 'border', 'border-green-200');
+            } else if (type === 'error') {
+                notification.classList.add('bg-red-100', 'text-red-800', 'border', 'border-red-200');
+            } else {
+                notification.classList.add('bg-blue-100', 'text-blue-800', 'border', 'border-blue-200');
+            }
+            
+            notification.innerHTML = `
+                <div class="flex items-start">
+                    <div class="mr-3 mt-1">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <p class="text-sm">${message}</p>
+                    </div>
+                    <button class="ml-4 text-gray-500 hover:text-gray-700" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animation d'entrée
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+                notification.classList.add('translate-x-0');
+            }, 10);
+            
+            // Animation de sortie après 5 secondes
+            setTimeout(() => {
+                notification.classList.remove('translate-x-0');
+                notification.classList.add('translate-x-full');
+                
+                // Supprimer après l'animation
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.parentElement.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
+        
+        // Mettre à jour l'année dans le footer
+        function updateYearInFooter() {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        }
+    </script>
+</body>
+</html>
