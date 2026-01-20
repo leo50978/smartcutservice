@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Cut Service - E-commerce Premium</title>
+    <title>Smart cut services - E-commerce Premium</title>
     <meta name="description" content="Boutique en ligne premium pour des produits d'exception">
     
     <!-- Tailwind CSS via CDN -->
@@ -225,7 +225,122 @@
         </nav>
     </header>
 
-    <main id="main-content" class="opacity-0">
+
+
+ <main id="main-content" class="opacity-0">
+    <div>
+<!-- =========================================================================
+ =====================
+ =======================
+ =========== -->
+ <!-- Bannière de livraison (marquee) -->
+<!-- Bannière de livraison (marquee) -->
+<!-- Bannière de livraison (marquee) avec animation -->
+<marquee class="custom-marquee bg-blue-600 text-white py-3 " id="marquee-banner" behavior="scroll" direction="left" scrollamount="3">
+  <div class="contenu personnalisé de la bannière inline-block">
+    <span class="text-sm md:text-base">
+     
+      <span id="marquee-text">Chargement du message...</span>
+    </span>
+  </div>
+</marquee>
+
+<!-- Script Firebase pour la bannière marquee (unique) -->
+<!-- Script Firebase spécifique pour la bannière marquee -->
+<script type="module">
+  // Attendre que le DOM soit chargé
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initialisation de la bannière marquee...');
+    
+    // Vérifier si Firebase est déjà disponible
+    if (typeof firebase === 'undefined') {
+      console.error('Firebase n\'est pas chargé');
+      document.getElementById('marquee-text').textContent = 'Erreur de chargement Firebase';
+      return;
+    }
+    
+    try {
+      // Initialiser Firebase si pas déjà fait
+      if (!firebase.apps.length) {
+        const firebaseConfig = {
+          apiKey: "AIzaSyBZEl66YW2x4csBHfU3BlSDBYxigVQ1U8U",
+          authDomain: "izipret-c669d.firebaseapp.com",
+          projectId: "izipret-c669d",
+          storageBucket: "izipret-c669d.firebasestorage.app",
+          messagingSenderId: "483506445126",
+          appId: "1:483506445126:web:5dcc2efef0fabb8f0b2347",
+          measurementId: "G-0SKSRSFHZ4"
+        };
+        firebase.initializeApp(firebaseConfig);
+      }
+      
+      // Référence à Firestore
+      const db = firebase.firestore();
+      
+      // Référence au document marquee
+      const marqueeRef = db.collection('marquee').doc('currentMessage');
+      
+      console.log('Écoute des changements sur le document marquee...');
+      
+      // Écouter les changements en temps réel
+      marqueeRef.onSnapshot({
+        // Inclure les métadonnées pour avoir un snapshot immédiat
+        includeMetadataChanges: true
+      }, (doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          console.log('Données reçues:', data);
+          
+          const marqueeText = document.getElementById('marquee-text');
+          if (marqueeText) {
+            // Si le message contient du HTML (comme des icônes)
+            if (data.message && typeof data.message === 'string') {
+              marqueeText.innerHTML = data.message;
+            } else if (data.message) {
+              marqueeText.textContent = data.message;
+            } else {
+              marqueeText.innerHTML = '<i class="fas fa-truck mr-2"></i>Livraison gratuite disponible !';
+            }
+            
+            console.log('Message mis à jour dans la bannière');
+          }
+        } else {
+          console.log('Document marquee non trouvé, création...');
+          // Créer le document avec un message par défaut
+          marqueeRef.set({
+            message: '<i class="fas fa-truck mr-2"></i>Livraison gratuite sur toutes les commandes !',
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+            created: new Date().toISOString()
+          }).then(() => {
+            console.log('Document marquee créé avec succès');
+          }).catch(error => {
+            console.error('Erreur création document:', error);
+          });
+        }
+      }, (error) => {
+        console.error('Erreur écoute Firestore:', error);
+        const marqueeText = document.getElementById('marquee-text');
+        if (marqueeText) {
+          marqueeText.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Service temporairement indisponible';
+        }
+      });
+      
+    } catch (error) {
+      console.error('Erreur initialisation Firebase:', error);
+      const marqueeText = document.getElementById('marquee-text');
+      if (marqueeText) {
+        marqueeText.textContent = 'Bienvenue dans notre boutique !';
+      }
+    }
+  });
+</script>
+
+<!-- ==============================
+ =======================================================================
+ ============================================================================================
+ ======================================================================================================================================= -->
+ </div>  
+ 
         <!-- 🟢 3️⃣ HERO - PRODUITS VEDETTES -->
         <section id="hero" class="relative h-screen overflow-hidden">
             <div id="hero-slider" class="absolute inset-0">
@@ -415,10 +530,10 @@
       <div class="space-y-4">
         <h3 class="text-lg font-semibold text-gray-100">Navigation rapide</h3>
         <ul class="space-y-2 text-sm">
-          <li><a href="/" class="text-blue-400 hover:text-blue-300 transition-colors duration-200">Accueil</a></li>
-          <li><a href="/catalogue" class="text-blue-400 hover:text-blue-300 transition-colors duration-200">Catalogue</a></li>
-          <li><a href="/panier" class="text-blue-400 hover:text-blue-300 transition-colors duration-200">Panier</a></li>
-          <li><a href="/about" class="text-blue-400 hover:text-blue-300 transition-colors duration-200">À propos</a></li>
+          <li><a href="index.html" class="text-blue-400 hover:text-blue-300 transition-colors duration-200">Accueil</a></li>
+          <li><a href="catalogue.html" class="text-blue-400 hover:text-blue-300 transition-colors duration-200">Catalogue</a></li>
+          <li><a href="catalogue.html#panier" class="text-blue-400 hover:text-blue-300 transition-colors duration-200">Panier</a></li>
+          <li><a href="about.html" class="text-blue-400 hover:text-blue-300 transition-colors duration-200">À propos</a></li>
         </ul>
       </div>
 
@@ -467,7 +582,7 @@
 
     <!-- Copyright -->
     <div class="mt-10 pt-6 border-t border-gray-800 text-center text-sm text-gray-500">
-      <p>&copy; 2026 Smart Cut Service . Tous droits réservés.</p>
+      <p>&copy; 2026 Smart cut services . Tous droits réservés.</p>
     </div>
   </div>
 </div>
@@ -481,7 +596,7 @@
             </div>
             
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; <span id="current-year">2024</span> Smart Cut Service. Tous droits réservés.</p>
+                <p>&copy; <span id="current-year">2024</span> Smart cut services. Tous droits réservés.</p>
             </div>
         </div>
     </footer>
@@ -913,9 +1028,9 @@
             heroContent.innerHTML = `
                 <h1 class="text-4xl md:text-6xl font-bold mb-4">${slide.name || 'Produit Premium'}</h1>
                 <div class="text-xl md:text-2xl mb-6">
-                    <span class="font-bold">${formatPrice(slide.price || 0)}</span>
+                    <span class="font-bold">${(slide.price || 0)} G</span>
                     ${slide.showOldPrice && slide.oldPrice ? 
-                        `<span class="line-through text-gray-300 ml-2">${formatPrice(slide.oldPrice)}</span>` : 
+                        `<span class="line-through text-gray-300 ml-2">${(slide.oldPrice)} G</span>` : 
                         ''}
                 </div>
                 <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">${slide.description || 'Découvrez l\'excellence'}</p>
@@ -1179,9 +1294,9 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold text-gray-800 mb-2 truncate">${product.name || 'Produit'}</h3>
                         <div class="flex items-center justify-between mb-4">
-                            <div class="text-lg font-bold text-primary">${formatPrice(product.price || 0)}</div>
+                            <div class="text-lg font-bold text-primary">${(product.price || 0)} G</div>
                             ${product.showOldPrice && product.oldPrice ? 
-                                `<div class="text-gray-400 line-through text-sm">${formatPrice(product.oldPrice)}</div>` : ''}
+                                `<div class="text-gray-400 line-through text-sm">${(product.oldPrice)} G</div>` : ''}
                         </div>
                     <a href="catalogue.html"">
                         <button class="btn-primary w-full py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-[1.02]"
@@ -1571,7 +1686,7 @@
             container.innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div>
-                        <h3 class="text-xl font-bold mb-4">Smart Cut Service</h3>
+                        <h3 class="text-xl font-bold mb-4">Smart cut services</h3>
                         <p class="text-gray-400 mb-4">Votre boutique en ligne premium pour des produits d'exception.</p>
                         <div class="flex space-x-4">
                             <a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
@@ -1595,7 +1710,7 @@
                         <ul class="space-y-3">
                             <li class="flex items-center text-gray-400">
                                 <i class="fas fa-envelope mr-3"></i>
-                                contact@Smart Cut Service.com
+                                contact@Smart cut services.com
                             </li>
                             <li class="flex items-center text-gray-400">
                                 <i class="fas fa-phone mr-3"></i>
@@ -1820,7 +1935,7 @@
         function formatPrice(price) {
             return new Intl.NumberFormat('fr-FR', {
                 style: 'currency',
-                currency: 'EUR'
+                currency: 'HTG'
             }).format(price);
         }
         

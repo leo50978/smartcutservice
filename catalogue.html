@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Cut Service | E-commerce SPA-Like</title>
+    <title>Smart cut services | E-commerce SPA-Like</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -415,7 +415,7 @@
 
     <!-- Copyright -->
     <div class="mt-10 pt-6 border-t border-gray-800 text-center text-sm text-gray-500">
-      <p>&copy; 2026 Smart Cut Service . Tous droits réservés.</p>
+      <p>&copy; 2026 Smart cut services . Tous droits réservés.</p>
     </div>
   </div>
 </div>
@@ -428,13 +428,13 @@
                             <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                                 <span class="text-white font-bold">IZI</span>
                             </div>
-                            <span class="font-heading font-bold text-xl">Smart Cut Service</span>
+                            <span class="font-heading font-bold text-xl">Smart cut services</span>
                         </div>
                         <p class="text-gray-400">Votre boutique en ligne préférée</p>
                     </div>
                     
                     <div class="text-center md:text-right">
-                        <p class="text-gray-400">&copy; <span id="current-year">2026</span> Smart Cut Service. Tous droits réservés.</p>
+                        <p class="text-gray-400">&copy; <span id="current-year">2026</span> Smart cut servicess. Tous droits réservés.</p>
                         <p class="text-gray-400">Conçu avec <i class="fas fa-heart text-red-400"></i> pour nos clients</p>
                     </div>
                 </div>
@@ -535,7 +535,7 @@
                                                     <span class="font-medium text-gray-900">Point de rencontre</span>
                                                     <p class="text-sm text-gray-600 mt-1">Rencontrez notre livreur à un point convenu</p>
                                                 </div>
-                                                <span class="text-green-600 font-medium">Gratuit</span>
+                                                <span class="text-green-600 font-medium">Payant</span>
                                             </div>
                                         </label>
                                         
@@ -629,9 +629,9 @@
                                         <input type="radio" id="payment-moncash" name="paymentMethod" value="moncash" class="h-5 w-5 text-blue-600">
                                     </div>
                                     <div>
-                                        <label for="payment-moncash" class="cursor-pointer">
+                                        <label for="payment-moncashy" class="cursor-pointer">
                                             <div class="font-medium text-gray-900 mb-1">MonCash</div>
-                                            <p class="text-sm text-gray-600">Paiement mobile sécurisé</p>
+                                            <p class="text-sm text-gray-600">Integration en attente</p>
                                         </label>
                                     </div>
                                 </div>
@@ -644,9 +644,9 @@
                                         <input type="radio" id="payment-natcash" name="paymentMethod" value="natcash" class="h-5 w-5 text-blue-600">
                                     </div>
                                     <div>
-                                        <label for="payment-natcash" class="cursor-pointer">
+                                        <label for="payment-natcasyh" class="cursor-pointer">
                                             <div class="font-medium text-gray-900 mb-1">NatCash</div>
-                                            <p class="text-sm text-gray-600">Paiement mobile sécurisé</p>
+                                            <p class="text-sm text-gray-600">Integration en attente</p>
                                         </label>
                                     </div>
                                 </div>
@@ -767,10 +767,7 @@
                                     <span class="text-gray-600">Sous-total</span>
                                     <span id="summary-subtotal">0 HTG</span>
                                 </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600">Livraison</span>
-                                    <span id="summary-delivery">Gratuit</span>
-                                </div>
+                              
                                 <div class="pt-2 border-t border-gray-200 flex justify-between font-medium">
                                     <span>Total</span>
                                     <span id="summary-total">0 HTG</span>
@@ -2051,7 +2048,7 @@
                     const qrContainer = document.getElementById('moncash-qr');
                     qrContainer.innerHTML = '';
                     new QRCode(qrContainer, {
-                        text: `moncash://payment?amount=${window.appState.checkoutTotal}&phone=50948000000&description=Commande%20IZI-PRET`,
+                        text: `moncash://payment?amount=${window.appState.checkoutTotal}&phone=50948000000&description=Commande%20Smart Cut Services`,
                         width: 150,
                         height: 150,
                         colorDark: "#000000",
@@ -2070,7 +2067,7 @@
                     const qrContainer = document.getElementById('natcash-qr');
                     qrContainer.innerHTML = '';
                     new QRCode(qrContainer, {
-                        text: `natcash://payment?amount=${window.appState.checkoutTotal}&phone=50948111111&description=Commande%20IZI-PRET`,
+                        text: `natcash://payment?amount=${window.appState.checkoutTotal}&phone=50948111111&description=Commande%20Smart Cut Services`,
                         width: 150,
                         height: 150,
                         colorDark: "#000000",
@@ -2350,16 +2347,16 @@
                     // Set properties
                     doc.setProperties({
                         title: `Reçu Commande ${orderData.orderCode}`,
-                        subject: 'Reçu de commande IZI-PRET',
-                        author: 'IZI-PRET',
+                        subject: 'Reçu de commande Smart Cut Services',
+                        author: 'Smart Cut Services',
                         keywords: 'reçu, commande, facture, livraison',
-                        creator: 'IZI-PRET E-commerce'
+                        creator: 'Smart Cut Services E-commerce'
                     });
                     
                     // Header
                     doc.setFontSize(24);
                     doc.setTextColor(59, 130, 246);
-                    doc.text('IZI-PRET', 105, 20, { align: 'center' });
+                    doc.text('Smart Cut Services', 105, 20, { align: 'center' });
                     
                     doc.setFontSize(14);
                     doc.setTextColor(100, 100, 100);
@@ -2496,7 +2493,7 @@
                     doc.setFontSize(7);
                     doc.setTextColor(100, 100, 100);
                     doc.text('Merci pour votre commande!', 105, finalY + 80, { align: 'center' });
-                    doc.text('IZI-PRET • support@izi-pret.com • +509 48 00 0000', 105, finalY + 85, { align: 'center' });
+                    doc.text('Smart Cut Services • support@Smart Cut Services.com • +509 48 00 0000', 105, finalY + 85, { align: 'center' });
                     
                     // Save PDF
                     const fileName = `reçu-commande-${orderData.orderCode}.pdf`;
@@ -3470,7 +3467,7 @@
                     <div class="mb-8 text-center">
                         <h1 class="font-heading font-bold text-3xl md:text-4xl text-gray-800 mb-4">À Propos de Nous</h1>
                         <p class="text-gray-600 max-w-2xl mx-auto">
-                            Découvrez l'histoire d'IZI-PRET et notre engagement à vous offrir la meilleure expérience d'achat en ligne.
+                            Découvrez l'histoire d'Smart Cut Services et notre engagement à vous offrir la meilleure expérience d'achat en ligne.
                         </p>
                     </div>
                     
@@ -3479,7 +3476,7 @@
                             <div class="max-w-3xl">
                                 <h2 class="font-heading font-bold text-3xl md:text-4xl mb-4">Votre confiance, notre priorité</h2>
                                 <p class="text-xl mb-6 opacity-90">
-                                    Chez IZI-PRET, nous croyons que le shopping en ligne devrait être simple, sécurisé et agréable.
+                                    Chez Smart Cut Services, nous croyons que le shopping en ligne devrait être simple, sécurisé et agréable.
                                 </p>
                                 <div class="flex flex-wrap gap-4">
                                     <div class="flex items-center">

@@ -809,7 +809,7 @@
       </a>
 
       <!-- Lien About -->
-      <a href="about.html" 
+      <a href="dashabout.html" 
          class="navBubbleLinkUniq flex items-center gap-3 p-3 rounded-xl hover:bg-cyan-50 dark:hover:bg-gray-700 transition-colors duration-200 group focus:outline-none focus:bg-cyan-50 dark:focus:bg-gray-700">
         <div class="w-10 h-10 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
           <i class="fas fa-info-circle text-cyan-600 dark:text-cyan-400"></i>
@@ -822,7 +822,7 @@
       </a>
 
       <!-- Lien Transfert -->
-      <a href="transfert.html" 
+      <a href="marquee.html" 
          class="navBubbleLinkUniq flex items-center gap-3 p-3 rounded-xl hover:bg-pink-50 dark:hover:bg-gray-700 transition-colors duration-200 group focus:outline-none focus:bg-pink-50 dark:focus:bg-gray-700">
         <div class="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
           <i class="fas fa-exchange-alt text-pink-600 dark:text-pink-400"></i>
@@ -1534,9 +1534,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </td>
                     <td class="py-4 px-4">
-                        <div class="font-semibold text-gray-900">${formatPrice(product.price || 0)}</div>
+                        <div class="font-semibold text-gray-900">${(product.price || 0)}G</div>
                         ${product.showOldPrice && product.oldPrice ? 
-                            `<div class="text-sm text-gray-400 line-through">${formatPrice(product.oldPrice)}</div>` : ''}
+                            `<div class="text-sm text-gray-400 line-through">${(product.oldPrice)} G</div>` : ''}
                     </td>
                     <td class="py-4 px-4">
                         ${product.isAvailable !== false ? 
@@ -1915,7 +1915,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </td>
                     <td class="py-4 px-4">
-                        <div class="font-semibold text-gray-900">${formatPrice(product.price || 0)}</div>
+                        <div class="font-semibold text-gray-900">${(product.price || 0)} G</div>
                     </td>
                     <td class="py-4 px-4">
                         <label class="toggle-switch">
